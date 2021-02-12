@@ -33,3 +33,41 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+class SendingProfile(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
+    host = models.CharField(max_length=255)
+    username = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class EmailTemplate(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    name = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255)
+    content = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+class Campaign(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    name = models.CharField(max_length=255, blank=True)
+    email_template = models.ForeignKey('EmailTemplate', on_delete=models.CASCADE)
+    sending_profile = models.ForeignKey('SendingProfile', on_delete=models.CASCADE)  
+
+    def __str__(self):
+        return self.name
